@@ -1,0 +1,27 @@
+Example 2 Fruityvice API
+
+#Another, more common way to use APIs, is through requests library. This next lab, Requests and HTTP, will contain more information about requests.
+#We will start by importing all required libraries.
+import requests
+import json
+
+#We will obtain the fruityvice API data using requests.get("url") function. The data is in a json format.
+data = requests.get("https://web.archive.org/web/20240929211114/https://fruityvice.com/api/fruit/all")
+
+#We will retrieve results using json.loads() function.
+results = json.loads(data.text)
+
+#We will convert our json data into pandas data frame.
+pd.DataFrame(results)
+
+#The result is in a nested json format. The 'nutrition' column contains multiple subcolumns, so the data needs to be 'flattened' or normalized.
+df2 = pd.json_normalize(results)
+df2
+
+#Let's see if we can extract some information from this dataframe. Perhaps, we need to know the family and genus of a cherry.
+cherry = df2.loc[df2["name"] == 'Cherry']
+(cherry.iloc[0]['family']) , (cherry.iloc[0]['genus'])
+
+#Find out how many calories are contained in a banana.
+cal_banana = df2.loc[df2["name"] == 'Banana']
+cal_banana.iloc[0]['nutritions.calories']
